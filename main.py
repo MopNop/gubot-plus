@@ -1,24 +1,41 @@
 import discord
+from discord.ext import commands
+import asyncio
+import os
+import glob
+import sys
+import sqlite3
+import pyfiglet
+from colorama import Fore
 import random
-guh = ["images/guh1.jpg",
-       "images/guh2.jpg",
-       "images/guh3.jpg",
-       "images/guh4.jpg",
-       "images/guh5.jpg",]
+from dotenv import load_dotenv
 
-class MyClient(discord.Client):
-    async def on_ready(self):
-        print(f'Logged on as {self.user}!')
-
-    async def on_message(self, message):
-        print(f'Message from {message.author}: {message.content}')
-        if message.content.lower() == 'guh':
-            print('guh')
-            await message.channel.send(file=discord.File(random.choice(guh)))
+load_dotenv()
+TOKEN = os.getenv("TOKEN")
 
 
-intents = discord.Intents.default()
-intents.message_content = True
+intents = discord.Intents.all()
+mentions = discord.AllowedMentions(everyone=False, users=True, roles=False)
+bot = commands.Bot(command_prefix='.', intents=intents, application_id=1253050889774698577)
 
-client = MyClient(intents=intents)
-client.run('DISCORD_TOKEN')
+
+@bot.event
+async def on_ready():
+    print(Fore.LIGHTRED_EX + pyfiglet.figlet_format("benbot", font="slant"))
+    print(Fore.LIGHTWHITE_EX + f'logged in as {bot.user.name} - {bot.user.id} ({discord.__version__})')
+    print(Fore.RESET)
+    bot.startup_time = discord.utils.utcnow()
+
+
+async def load():
+    for file_path in glob.glob('./cogs/**/*.py', recursive=True):
+        module_name = os.path.splitext(os.path.relpath(file_path, start='./cogs'))[0].replace(os.sep, '.')
+        await bot.load_extension(f'cogs.{module_name}')
+
+
+async def main():
+    await load()
+    await bot.start(TOKEN, reconnect=True)
+
+
+asyncio.run(main())
