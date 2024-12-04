@@ -21,7 +21,7 @@ bot = commands.Bot(command_prefix='.', intents=intents, application_id=125305088
 
 @bot.event
 async def on_ready():
-    print(Fore.LIGHTRED_EX + pyfiglet.figlet_format("benbot", font="slant"))
+    print(Fore.LIGHTRED_EX + pyfiglet.figlet_format("guhbot", font="slant"))
     print(Fore.LIGHTWHITE_EX + f'logged in as {bot.user.name} - {bot.user.id} ({discord.__version__})')
     print(Fore.RESET)
     bot.startup_time = discord.utils.utcnow()
