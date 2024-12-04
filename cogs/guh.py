@@ -11,7 +11,8 @@ guh = ["images/guh1.jpg",
        "images/guh2.jpg",
        "images/guh3.jpg",
        "images/guh4.jpg",
-       "images/guh5.jpg",]
+       "images/guh5.jpg",
+       "images/guh6.jpg"]
 
 
 class Ping(commands.Cog):
@@ -23,11 +24,9 @@ class Ping(commands.Cog):
         print(f'{cog_name} cog loaded')
 
     @commands.Cog.listener()
-    async def on_message(self, message):
-        print(f'Message from {message.author}: {message.content}')
-        if message.content.lower() == 'guh':
-            print('guh')
-            await message.channel.send(file=discord.File(random.choice(guh)))
+    async def on_message(self, ctx):
+        if 'guh' in ctx.content.lower():
+            await ctx.reply(file=discord.File(random.choice(guh)))
 
 
 async def setup(bot):
